@@ -17,8 +17,12 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
+set(HEADER_FILES
+	include/Driver.h)
+
 set(SOURCE_FILES
-	src/main.cpp)
+	src/main.cpp
+	src/Driver.cpp)
 
 # list resources files
 set(RESOURCES_FILES
@@ -27,6 +31,7 @@ set(RESOURCES_FILES
 
 # add library target
 add_executable(graphizer
+	${HEADER_FILES}
 	${SOURCE_FILES}
 	${RESOURCES_FILES}
 )
