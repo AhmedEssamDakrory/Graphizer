@@ -4,7 +4,7 @@ Canvas {
     id:canvas
     property int paintX: -1
     property int paintY: -1
-    property color drawColor: "white"
+    property color drawColor: "black"
     property int circleRadius: 20
 
     onPaint: drawCircle()
