@@ -2,6 +2,13 @@ import QtQuick
 
 Canvas {
     id:canvas
+
+    enum MODE {
+        IDLE,
+        INSERTION,
+        CONNECTION
+    }
+    property int mode: MODE.INSERTION
     property int paintX: -1
     property int paintY: -1
     property color drawColor: "black"
