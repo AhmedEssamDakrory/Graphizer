@@ -1,4 +1,6 @@
 import QtQuick
+import QtQml
+import Driver
 
 Canvas {
     id:canvas
@@ -17,13 +19,15 @@ Canvas {
     onPaint: drawCircle()
 
     MouseArea {
-        id:mousearea
+        id: mousearea
         hoverEnabled:true
         anchors.fill: parent
         onClicked: {
-            paintX = mouseX
-            paintY = mouseY
-            requestPaint()
+            switch(mode) {
+            case Board.MODE.INSERTION:
+                Driver.graph.insertNode(mouseX, mouseY);
+                break;
+            }
         }
     }
 
@@ -51,5 +55,14 @@ Canvas {
     function clear() {
         const ctx = canvas.getContext('2d')
         ctx.clearRect(0, 0, width, height)
+    }
+
+    Connections {
+        target: Driver.graph
+        function onNodeInserted(x, y) {
+            canvas.paintX = x
+            canvas.paintY = y
+            canvas.requestPaint()
+        }
     }
 }

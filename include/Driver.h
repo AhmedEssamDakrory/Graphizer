@@ -1,20 +1,18 @@
 #pragma once
 
+#include <Graph.h>
+
 #include <QObject>
 
 #include <vector>
 
-struct Point
-{
-	float x;
-	float y;
-};
-
 class Driver : public QObject
 {
 	Q_OBJECT
+	Q_PROPERTY(Graph* graph READ graph CONSTANT);
+
 public:
-	Driver(QObject* parent = nullptr) : QObject(parent) {}
+	Driver(QObject* parent = nullptr) : QObject(parent) { mGraph = new Graph{this}; }
 
 	static Driver*
 	singleton()
@@ -23,9 +21,12 @@ public:
 		return &self;
 	}
 
-	Q_INVOKABLE void
-	insertNode(float x, float y);
+	Graph*
+	graph() const
+	{
+		return mGraph;
+	}
 
 private:
-	std::vector<Point> mPoints;
+	Graph* mGraph;
 };

@@ -18,11 +18,12 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 set(HEADER_FILES
-	include/Driver.h)
+	include/Driver.h
+	include/Graph.h)
 
 set(SOURCE_FILES
 	src/main.cpp
-	src/Driver.cpp)
+	src/Graph.cpp)
 
 # list resources files
 set(RESOURCES_FILES
