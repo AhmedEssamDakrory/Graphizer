@@ -3,7 +3,7 @@ import QtQml
 import Driver
 
 Canvas {
-    id:canvas
+    id: canvas
 
     enum MODE {
         IDLE,
@@ -13,43 +13,87 @@ Canvas {
     property int mode: MODE.INSERTION
     property int paintX: -1
     property int paintY: -1
+    property var firstSelectedNode: null
+    property var secondSelectedNode: null
     property color drawColor: "black"
     property int circleRadius: 20
 
-    onPaint: drawCircle()
+    function reset() {
+        paintX = -1
+        paintY = -1
+        firstSelectedNode = null
+        secondSelectedNode = null
+    }
+
+    onPaint: {
+        switch(mode) {
+        case Board.MODE.INSERTION:
+            drawNode()
+            break
+        case Board.MODE.CONNECTION:
+            drawEdge()
+            break
+        }
+    }
 
     MouseArea {
         id: mousearea
         hoverEnabled:true
         anchors.fill: parent
         onClicked: {
+            console.log(mouseX, mouseY)
             switch(mode) {
             case Board.MODE.INSERTION:
-                Driver.graph.insertNode(mouseX, mouseY);
-                break;
+                Driver.graph.insertNode(mouseX, mouseY)
+                break
+            case Board.MODE.CONNECTION:
+                const selectedNode = Driver.graph.selectNode(mouseX, mouseY)
+                if (isValidPos(selectedNode.x, selectedNode.y)) {
+                    if (firstSelectedNode == null) {
+                        firstSelectedNode = selectedNode
+                    } else {
+                        secondSelectedNode = selectedNode
+                        Driver.graph.connect(firstSelectedNode.x, firstSelectedNode.y,
+                                             secondSelectedNode.x, secondSelectedNode.y)
+                        requestPaint()
+                    }
+                }
+                break
             }
         }
     }
 
-    function isValidPos()
+    function isValidPos(x, y)
     {
-        return !(paintX - circleRadius <= canvas.x ||
-                 paintX + circleRadius >= canvas.x + canvas.width ||
-                 paintY - circleRadius <= canvas.y ||
-                 paintY + circleRadius >= canvas.y + canvas.height)
+        return !(x - circleRadius <= canvas.x ||
+                 x + circleRadius >= canvas.x + canvas.width ||
+                 y - circleRadius <= canvas.y ||
+                 y + circleRadius >= canvas.y + canvas.height)
     }
 
-    function drawCircle() {
-        const ctx = getContext("2d");
+    function drawNode() {
+        const ctx = getContext("2d")
 
-        if (isValidPos() === false)
+        if (isValidPos(paintX, paintY) === false)
             return
 
         ctx.beginPath()
         ctx.lineWidth = 2
         ctx.strokeStyle = drawColor
-        ctx.arc(paintX, paintY, 20, 0, 2 * Math.PI, false);
-        ctx.stroke();
+        ctx.arc(paintX, paintY, 20, 0, 2 * Math.PI, false)
+        ctx.stroke()
+        reset()
+    }
+
+    function drawEdge () {
+        const ctx = getContext("2d")
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = drawColor
+        ctx.beginPath()
+        ctx.moveTo(firstSelectedNode.x, firstSelectedNode.y)
+        ctx.lineTo(secondSelectedNode.x, secondSelectedNode.y)
+        ctx.stroke()
+        reset()
     }
 
     function clear() {
