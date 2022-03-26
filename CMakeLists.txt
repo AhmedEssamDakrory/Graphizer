@@ -18,6 +18,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 set(HEADER_FILES
+	include/utils.h
 	include/Driver.h
 	include/Graph.h)
 

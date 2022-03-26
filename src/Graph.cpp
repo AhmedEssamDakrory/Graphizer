@@ -1,4 +1,5 @@
 #include "Graph.h"
+#include "utils.h"
 
 #include <math.h>
 
@@ -22,8 +23,10 @@ Graph::insertNode(int x, int y)
 			return;
 	}
 
-	mNodes.push_back(std::unique_ptr<Node>(new Node{x, y}));
-	emit nodeInserted(x, y);
+	auto id = mIDGenerator++;
+	mNodes.push_back(std::unique_ptr<Node>(new Node{id, x, y}));
+	auto color = generate_distinct_hsb_color(id);
+	emit nodeInserted(x, y, QColor::fromHsv(color.h, color.s, color.b));
 }
 
 QVariantMap

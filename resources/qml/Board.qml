@@ -79,16 +79,16 @@ Canvas {
 
         ctx.beginPath()
         ctx.lineWidth = 2
-        ctx.strokeStyle = drawColor
+        ctx.fillStyle = drawColor
         ctx.arc(paintX, paintY, 20, 0, 2 * Math.PI, false)
-        ctx.stroke()
+        ctx.fill()
         reset()
     }
 
     function drawEdge () {
         const ctx = getContext("2d")
         ctx.lineWidth = 2;
-        ctx.strokeStyle = drawColor
+        ctx.strokeStyle = "black"
         ctx.beginPath()
         ctx.moveTo(firstSelectedNode.x, firstSelectedNode.y)
         ctx.lineTo(secondSelectedNode.x, secondSelectedNode.y)
@@ -103,9 +103,11 @@ Canvas {
 
     Connections {
         target: Driver.graph
-        function onNodeInserted(x, y) {
+        function onNodeInserted(x, y, c) {
             canvas.paintX = x
             canvas.paintY = y
+            canvas.drawColor = c
+            console.log("Color: ", canvas.drawColor)
             canvas.requestPaint()
         }
     }

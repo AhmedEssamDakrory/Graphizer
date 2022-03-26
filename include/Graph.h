@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QColor>
 #include <QObject>
 #include <QVariantMap>
 
@@ -8,6 +9,8 @@
 
 struct Node
 {
+	uint32_t id;
+
 	int x;
 	int y;
 	std::vector<Node*> neighbours;
@@ -31,7 +34,7 @@ public:
 
 signals:
 	void
-	nodeInserted(int x, int y);
+	nodeInserted(int x, int y, QColor color);
 
 private:
 	// utility functions
@@ -40,4 +43,5 @@ private:
 
 	int mNodeRadius = 20;
 	std::vector<std::unique_ptr<Node>> mNodes;
+	uint32_t mIDGenerator = 0;
 };
