@@ -64,8 +64,9 @@ Canvas {
     {
         while(paintRequests.length != 0) {
             const req = paintRequests.shift()
+            console.log("mode: ", req.mode)
 
-            switch(mode) {
+            switch(req.mode) {
             case Board.MODE.INSERTION:
                 drawNode(req.x, req.y, req.color)
                 break

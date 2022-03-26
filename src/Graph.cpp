@@ -27,7 +27,9 @@ Graph::insertNode(int x, int y)
 	}
 
 	auto id = mIDGenerator++;
-	mNodes.push_back(std::unique_ptr<Node>(new Node{id, x, y}));
+	auto node = new Node{id, x, y};
+	mNodes.push_back(std::unique_ptr<Node>(node));
+	mIDToNode[id] = node;
 	auto color = generate_distinct_hsb_color(id);
 	emit nodeInserted(x, y, QColor::fromHsv(color.h, color.s, color.b));
 }
@@ -82,6 +84,14 @@ Graph::runDSU()
 				qDebug() << "node " << node1->id << " and node " << node2->id << " unioned to the same set";
 			}
 		}
+	}
+
+	// notify client to draw nodes in the same set with the same color
+	for (const auto& node : mNodes)
+	{
+		auto parentID = dsu.find(node->id);
+		auto color = generate_distinct_hsb_color(parentID);
+		emit nodeInserted(node->x, node->y, QColor::fromHsv(color.h, color.s, color.b));
 	}
 }
 

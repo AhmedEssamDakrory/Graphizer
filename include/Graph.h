@@ -49,5 +49,6 @@ private:
 
 	int mNodeRadius = 20;
 	std::vector<std::unique_ptr<Node>> mNodes;
+	std::unordered_map<uint32_t, Node*> mIDToNode;
 	uint32_t mIDGenerator = 0;
 };
