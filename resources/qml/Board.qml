@@ -11,29 +11,18 @@ Canvas {
         CONNECTION
     }
     property int mode: MODE.INSERTION
-    property int paintX: -1
-    property int paintY: -1
     property var firstSelectedNode: null
     property var secondSelectedNode: null
-    property color drawColor: "black"
     property int circleRadius: 20
+    property var paintRequests: []
 
     function reset() {
-        paintX = -1
-        paintY = -1
         firstSelectedNode = null
         secondSelectedNode = null
     }
 
     onPaint: {
-        switch(mode) {
-        case Board.MODE.INSERTION:
-            drawNode()
-            break
-        case Board.MODE.CONNECTION:
-            drawEdge()
-            break
-        }
+        drawRequests()
     }
 
     MouseArea {
@@ -55,7 +44,7 @@ Canvas {
                         secondSelectedNode = selectedNode
                         Driver.graph.connect(firstSelectedNode.x, firstSelectedNode.y,
                                              secondSelectedNode.x, secondSelectedNode.y)
-                        requestPaint()
+                        reset()
                     }
                 }
                 break
@@ -71,29 +60,43 @@ Canvas {
                  y + circleRadius >= canvas.y + canvas.height)
     }
 
-    function drawNode() {
+    function drawRequests()
+    {
+        while(paintRequests.length != 0) {
+            const req = paintRequests.shift()
+
+            switch(mode) {
+            case Board.MODE.INSERTION:
+                drawNode(req.x, req.y, req.color)
+                break
+            case Board.MODE.CONNECTION:
+                drawEdge(req.x1, req.y1, req.x2, req.y2)
+                break
+            }
+        }
+    }
+
+    function drawNode(x, y, color) {
         const ctx = getContext("2d")
 
-        if (isValidPos(paintX, paintY) === false)
+        if (isValidPos(x, y) === false)
             return
 
         ctx.beginPath()
         ctx.lineWidth = 2
-        ctx.fillStyle = drawColor
-        ctx.arc(paintX, paintY, 20, 0, 2 * Math.PI, false)
+        ctx.fillStyle = color
+        ctx.arc(x, y, 20, 0, 2 * Math.PI, false)
         ctx.fill()
-        reset()
     }
 
-    function drawEdge () {
+    function drawEdge(x1, y1, x2, y2) {
         const ctx = getContext("2d")
         ctx.lineWidth = 2;
         ctx.strokeStyle = "black"
         ctx.beginPath()
-        ctx.moveTo(firstSelectedNode.x, firstSelectedNode.y)
-        ctx.lineTo(secondSelectedNode.x, secondSelectedNode.y)
+        ctx.moveTo(x1, y1)
+        ctx.lineTo(x2, y2)
         ctx.stroke()
-        reset()
     }
 
     function clear() {
@@ -104,10 +107,25 @@ Canvas {
     Connections {
         target: Driver.graph
         function onNodeInserted(x, y, c) {
-            canvas.paintX = x
-            canvas.paintY = y
-            canvas.drawColor = c
-            console.log("Color: ", canvas.drawColor)
+            let req = {
+                "mode": Board.MODE.INSERTION,
+                "x": x,
+                "y": y,
+                "color": c
+            }
+            paintRequests.push(req)
+            canvas.requestPaint()
+        }
+
+        function onEdgeConnected(x1, y1, x2, y2) {
+            let req = {
+                "mode": Board.MODE.CONNECTION,
+                "x1": x1,
+                "y1": y1,
+                "x2": x2,
+                "y2": y2
+            }
+            paintRequests.push(req)
             canvas.requestPaint()
         }
     }

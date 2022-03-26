@@ -39,6 +39,9 @@ signals:
 	void
 	nodeInserted(int x, int y, QColor color);
 
+	void
+	edgeConnected(int x1, int y1, int x2, int y2);
+
 private:
 	// utility functions
 	Node*

@@ -61,6 +61,8 @@ Graph::connect(int x1, int y1, int x2, int y2)
 			// connect (undirected graph edge)
 			node1->neighbours.push_back(node2);
 			node2->neighbours.push_back(node1);
+
+			emit edgeConnected(node1->x, node1->y, node2->x, node2->y);
 		}
 	}
 }
