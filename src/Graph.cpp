@@ -1,5 +1,8 @@
 #include "Graph.h"
+#include "DSU.h"
 #include "utils.h"
+
+#include <QDebug>
 
 #include <math.h>
 
@@ -58,6 +61,24 @@ Graph::connect(int x1, int y1, int x2, int y2)
 			// connect (undirected graph edge)
 			node1->neighbours.push_back(node2);
 			node2->neighbours.push_back(node1);
+		}
+	}
+}
+
+void
+Graph::runDSU()
+{
+	DSU dsu(mNodes.size());
+
+	for (const auto& node1 : mNodes)
+	{
+		for (const auto& node2 : node1->neighbours)
+		{
+			if (dsu.unin(node1->id, node2->id))
+			{
+				// TODO: notify client
+				qDebug() << "node " << node1->id << " and node " << node2->id << " unioned to the same set";
+			}
 		}
 	}
 }

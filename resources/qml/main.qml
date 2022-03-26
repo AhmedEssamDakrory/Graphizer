@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Layouts
 import QtQuick.Controls
+import Driver
 
 Window {
     width: 640
@@ -43,7 +44,10 @@ Window {
                 textColor: "white"
                 color: "#348ceb"
 
-                onClicked: board.mode = Board.MODE.IDLE
+                onClicked: {
+                    board.mode = Board.MODE.IDLE
+                    Driver.graph.runDSU()
+                }
             }
         }
         Rectangle {

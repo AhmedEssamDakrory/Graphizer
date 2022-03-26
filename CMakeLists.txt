@@ -20,7 +20,8 @@ set(CMAKE_AUTORCC ON)
 set(HEADER_FILES
 	include/utils.h
 	include/Driver.h
-	include/Graph.h)
+	include/Graph.h
+	include/DSU.h)
 
 set(SOURCE_FILES
 	src/main.cpp

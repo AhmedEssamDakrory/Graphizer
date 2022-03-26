@@ -32,6 +32,9 @@ public:
 	Q_INVOKABLE void
 	connect(int x1, int y1, int x2, int y2);
 
+	Q_INVOKABLE void
+	runDSU();
+
 signals:
 	void
 	nodeInserted(int x, int y, QColor color);
